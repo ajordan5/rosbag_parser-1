@@ -54,7 +54,7 @@ class Parser:
 		pe = []
 		pd = []
 
-		for topic, msg, t in bag.read_messages(topics=['/boat/PosVelEcef']):  
+		for topic, msg, t in bag.read_messages(topics=['/base/PosVelEcef']):  
 			sec.append(msg.header.stamp.secs)
 			nsec.append(msg.header.stamp.nsecs)
 			lon.append(msg.lla[0])

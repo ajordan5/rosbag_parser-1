@@ -9,8 +9,8 @@ def main():
 	
 	data = Parser()
 
-	filename = 'hover_w_noise.bag'
-	bag = rosbag.Bag('../../data/mocap/' + filename)
+	filename = 'anomally.bag'
+	bag = rosbag.Bag('../../mocap_anom/' + filename)
 
 	odom, truth= get_data(data, bag)
 	plot_2(1, odom.time, odom.position[0], 'odom', truth.time, truth.n, 'truth')

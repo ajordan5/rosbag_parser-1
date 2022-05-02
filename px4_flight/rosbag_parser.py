@@ -5,7 +5,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 
 class Parser:
-	def __init__(self,flightModeTopic,missionStateTopic,baseGpsTopic,baseImuTopic,roverRelPosTopic,roverGpsTopic,baseOdomTopic):
+	def __init__(self,flightModeTopic,missionStateTopic,baseGpsTopic,baseImuTopic,roverRelPosTopic,roverGpsTopic,baseOdomTopic,baseEulerTopic):
 		self.flightModeTopic = flightModeTopic
 		self.missionStateTopic = missionStateTopic
 		self.baseGpsTopic = baseGpsTopic
@@ -13,6 +13,7 @@ class Parser:
 		self.roverRelPosTopic = roverRelPosTopic
 		self.roverGpsTopic = roverGpsTopic
 		self.baseOdomTopic = baseOdomTopic
+		self.baseEulerTopic = baseEulerTopic
 
 	def get_flight_mode(self, bag):
 		sec = []
@@ -23,7 +24,8 @@ class Parser:
 			sec.append(t.secs)
 			nsec.append(t.nsecs)
 			flightMode.append(msg.point.x)
-
+			for part in msg:
+				print(part)
 		return FlightMode(sec,nsec,flightMode)
 
 	def get_mission_state(self, bag):
@@ -162,6 +164,26 @@ class Parser:
                         vz.append(msg.twist.twist.linear.z)
 
                 return RelPos(sec,nsec,pn,pe,pd), Odom(sec,nsec,0.0,0.0,0.0,qx,qy,qz,qw,vx,vy,vz)
+		
+	def get_boat_odom(self, bag):
+			boat_sec = []
+			boat_nsec = []
+			boat_x = []
+			boat_y = []
+			boat_z = []
+			boat_orientation = []
+
+			for topic, msg, t in bag.read_messages(topics=[self.baseOdomTopic]):  
+				boat_sec.append(msg.header.stamp.secs)
+				boat_nsec.append(msg.header.stamp.nsecs)			
+				boat_x.append(msg.pose.pose.position.x)
+				boat_y.append(msg.pose.pose.position.y)
+				boat_z.append(msg.pose.pose.position.z)
+				boat_orientation.append(msg.pose.pose.orientation)
+
+			boat = pos_orient_time(boat_sec, boat_nsec, boat_x, boat_y, boat_z, boat_orientation)
+
+			return boat
 
 
 class FlightMode:
@@ -212,5 +234,13 @@ class refLla:
 		self.lat = lat[0]
 		self.lon = lon[0]
 		self.alt = alt[0]
+
+class pos_orient_time:
+	def __init__(self, sec, nsec, x, y, z, orientation):
+		
+		self.time = np.array(sec)+np.array(nsec)*1E-9
+		
+		self.position = [x, y, z]
+		self.orientation = orientation
 
 

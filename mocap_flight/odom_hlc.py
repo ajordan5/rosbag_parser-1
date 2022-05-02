@@ -9,8 +9,8 @@ def main():
 	
 	data = Parser()
 
-	filename = 'z_wait20_18.bag'
-	bag = rosbag.Bag('../../../data/mocap/control_test_0910/' + filename)
+	filename = 'm2u_w_boat_2021-10-15-21-28-51.bag'
+	bag = rosbag.Bag('/home/magicc_undergrad/LandonShumway/rosbag_parser-1/' + filename)
 
 	data_type = 'mocap_master_branch'
 	# data_type = 'mocap'

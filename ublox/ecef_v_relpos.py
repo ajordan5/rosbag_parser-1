@@ -4,13 +4,15 @@ import matplotlib.pyplot as plt
 import rosbag
 import numpy as np
 from collections import namedtuple
+import os
 
 def main():
 
 	data = Parser()
-
-	filename = 'landing_ublox_jan18_1.bag'
-	bag = rosbag.Bag('../../data/outdoor/' + filename)
+	
+	filename = 'outdoor_w_boat_2022-02-05_moving1.bag'
+	path = os.path.join('../data/tests0205', filename)
+	bag = rosbag.Bag(path)
 
 	data_type = 'outdoor'
 	# data_type = 'mocap'
